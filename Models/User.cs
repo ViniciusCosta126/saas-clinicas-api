@@ -29,6 +29,7 @@ public class User
 
     public UserRole Role { get; set; }
 
-    public int? ClinicId { get; set; }
-    public Clinic? Clinic { get; set; }
+    public int ClinicId { get; set; }
+    public Clinic Clinic { get; set; } = null!;
+
 }

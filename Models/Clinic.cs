@@ -17,5 +17,6 @@ public class Clinic
     public string? Phone { get; set; }
 
     public ICollection<User> Users { get; set; } = new List<User>();
+    public ICollection<Professional> Professionals { get; set; } = new List<Professional>();
 
 }
