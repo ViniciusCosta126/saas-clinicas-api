@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using SaasClinicas.APi.Enums;
+using SaasClinicas.APi.Models.Base;
 
 namespace SaasClinicas.APi.Models;
 
-public class User
+public class User : BaseEntity
 {
     [Key]
     public int Id { get; set; }
@@ -22,11 +23,6 @@ public class User
     public DateTime? EmailVerifiedAt { get; set; }
     [Required]
     public string Password { get; set; } = string.Empty;
-
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? DeletedAt { get; set; }
-
     public UserRole Role { get; set; }
 
     public int ClinicId { get; set; }

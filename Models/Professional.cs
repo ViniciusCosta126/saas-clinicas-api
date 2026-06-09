@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using SaasClinicas.APi.Models.Base;
 
 namespace SaasClinicas.APi.Models;
 
 
-public class Professional
+public class Professional : BaseEntity
 {
     [Key]
     public int Id { get; set; }
@@ -20,9 +21,5 @@ public class Professional
 
     public int ClinicId { get; set; }
     public Clinic Clinic { get; set; } = null!;
-
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? DeletedAt { get; set; }
 
 }

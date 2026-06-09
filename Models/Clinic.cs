@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using SaasClinicas.APi.Models.Base;
 
 namespace SaasClinicas.APi.Models;
 
-public class Clinic
+public class Clinic : BaseEntity
 {
     [Key]
     public int Id { get; set; }
@@ -18,5 +19,7 @@ public class Clinic
 
     public ICollection<User> Users { get; set; } = new List<User>();
     public ICollection<Professional> Professionals { get; set; } = new List<Professional>();
+    public ICollection<ClinicPatient> ClinicPatients { get; set; }
+    = new List<ClinicPatient>();
 
 }
