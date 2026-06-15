@@ -17,12 +17,12 @@
 ---
 
 ## 2. Implementar Controller User Completo
-- [ ] Criar DTOs: `UserCreateDto`, `UserResponseDto`, `UserUpdateDto`
-- [ ] Reescrever `Controllers/User.cs` com CRUD completo
-- [ ] Remover lista estática
-- [ ] Integrar com `ApplicationDbContext`
-- [ ] Corrigir rota para `[Route("api/users")]`
-- [ ] Implementar soft delete
+- [x] Criar DTOs: `UserCreateDto`, `UserResponseDto`, `UserUpdateDto`
+- [x] Reescrever `Controllers/User.cs` com CRUD completo
+- [x] Remover lista estática
+- [x] Integrar com `ApplicationDbContext`
+- [x] Corrigir rota para `[Route("api/users")]`
+- [x] Implementar soft delete
 
 **Arquivo**: `Controllers/User.cs`
 **Esforço**: 1-2 horas
@@ -31,10 +31,10 @@
 ---
 
 ## 3. Criar DTOs para User, Patient, Professional
-- [ ] Criar pasta `Dtos/Users/` com Create, Response, Update
+- [x] Criar pasta `Dtos/Users/` com Create, Response, Update
 - [ ] Criar pasta `Dtos/Patients/` com Create, Response, Update
 - [ ] Criar pasta `Dtos/Professionals/` com Create, Response, Update
-- [ ] Não expor senhas em responses
+- [x] Não expor senhas em responses
 - [ ] Validações básicas nos DTOs
 
 **Esforço**: 1 hora

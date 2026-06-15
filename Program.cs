@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SaasClinicas.Api.Data;
+using SaasClinicas.Api.Mappings;
+using SaasClinicas.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +13,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<ClinicProfile>();
+    cfg.AddProfile<UserProfile>();
+});
+builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
