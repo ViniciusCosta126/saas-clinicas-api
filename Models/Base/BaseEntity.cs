@@ -1,4 +1,4 @@
-namespace SaasClinicas.APi.Models.Base;
+namespace SaasClinicas.Api.Models.Base;
 
 
 public abstract class BaseEntity

@@ -1,9 +1,9 @@
 
 using AutoMapper;
-using SaasClinicas.APi.Dtos.Clinics;
-using SaasClinicas.APi.Models;
+using SaasClinicas.Api.Dtos.Clinics;
+using SaasClinicas.Api.Models;
 
-namespace SaasClinicas.APi.Mappings;
+namespace SaasClinicas.Api.Mappings;
 
 public class ClinicProfile : Profile
 {

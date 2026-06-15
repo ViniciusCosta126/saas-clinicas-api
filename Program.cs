@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SaasClinicas.APi.Data;
+using SaasClinicas.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

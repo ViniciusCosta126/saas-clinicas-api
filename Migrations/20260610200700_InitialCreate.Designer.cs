@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SaasClinicas.APi.Data;
+using SaasClinicas.Api.Data;
 
 #nullable disable
 
@@ -20,7 +20,7 @@ namespace SaasClinicas.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.17");
 
-            modelBuilder.Entity("SaasClinicas.APi.Models.Clinic", b =>
+            modelBuilder.Entity("SaasClinicas.Api.Models.Clinic", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,7 +57,7 @@ namespace SaasClinicas.Api.Migrations
                     b.ToTable("Clinics");
                 });
 
-            modelBuilder.Entity("SaasClinicas.APi.Models.ClinicPatient", b =>
+            modelBuilder.Entity("SaasClinicas.Api.Models.ClinicPatient", b =>
                 {
                     b.Property<int>("ClinicId")
                         .HasColumnType("INTEGER");
@@ -75,7 +75,7 @@ namespace SaasClinicas.Api.Migrations
                     b.ToTable("ClinicPatients");
                 });
 
-            modelBuilder.Entity("SaasClinicas.APi.Models.Patient", b =>
+            modelBuilder.Entity("SaasClinicas.Api.Models.Patient", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -115,7 +115,7 @@ namespace SaasClinicas.Api.Migrations
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("SaasClinicas.APi.Models.Professional", b =>
+            modelBuilder.Entity("SaasClinicas.Api.Models.Professional", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -155,7 +155,7 @@ namespace SaasClinicas.Api.Migrations
                     b.ToTable("Professional");
                 });
 
-            modelBuilder.Entity("SaasClinicas.APi.Models.User", b =>
+            modelBuilder.Entity("SaasClinicas.Api.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -207,15 +207,15 @@ namespace SaasClinicas.Api.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("SaasClinicas.APi.Models.ClinicPatient", b =>
+            modelBuilder.Entity("SaasClinicas.Api.Models.ClinicPatient", b =>
                 {
-                    b.HasOne("SaasClinicas.APi.Models.Clinic", "Clinic")
+                    b.HasOne("SaasClinicas.Api.Models.Clinic", "Clinic")
                         .WithMany("ClinicPatients")
                         .HasForeignKey("ClinicId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SaasClinicas.APi.Models.Patient", "Patient")
+                    b.HasOne("SaasClinicas.Api.Models.Patient", "Patient")
                         .WithMany("ClinicPatients")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -226,9 +226,9 @@ namespace SaasClinicas.Api.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("SaasClinicas.APi.Models.Professional", b =>
+            modelBuilder.Entity("SaasClinicas.Api.Models.Professional", b =>
                 {
-                    b.HasOne("SaasClinicas.APi.Models.Clinic", "Clinic")
+                    b.HasOne("SaasClinicas.Api.Models.Clinic", "Clinic")
                         .WithMany("Professionals")
                         .HasForeignKey("ClinicId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -237,9 +237,9 @@ namespace SaasClinicas.Api.Migrations
                     b.Navigation("Clinic");
                 });
 
-            modelBuilder.Entity("SaasClinicas.APi.Models.User", b =>
+            modelBuilder.Entity("SaasClinicas.Api.Models.User", b =>
                 {
-                    b.HasOne("SaasClinicas.APi.Models.Clinic", "Clinic")
+                    b.HasOne("SaasClinicas.Api.Models.Clinic", "Clinic")
                         .WithMany("Users")
                         .HasForeignKey("ClinicId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -248,7 +248,7 @@ namespace SaasClinicas.Api.Migrations
                     b.Navigation("Clinic");
                 });
 
-            modelBuilder.Entity("SaasClinicas.APi.Models.Clinic", b =>
+            modelBuilder.Entity("SaasClinicas.Api.Models.Clinic", b =>
                 {
                     b.Navigation("ClinicPatients");
 
@@ -257,7 +257,7 @@ namespace SaasClinicas.Api.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("SaasClinicas.APi.Models.Patient", b =>
+            modelBuilder.Entity("SaasClinicas.Api.Models.Patient", b =>
                 {
                     b.Navigation("ClinicPatients");
                 });

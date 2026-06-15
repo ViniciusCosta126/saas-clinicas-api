@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using SaasClinicas.APi.Models;
+using SaasClinicas.Api.Models;
 
-namespace SaasClinicas.APi.Controllers;
+namespace SaasClinicas.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]

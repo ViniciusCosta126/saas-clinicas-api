@@ -1,11 +1,11 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SaasClinicas.APi.Data;
-using SaasClinicas.APi.Dtos.Clinics;
-using SaasClinicas.APi.Models;
+using SaasClinicas.Api.Data;
+using SaasClinicas.Api.Dtos.Clinics;
+using SaasClinicas.Api.Models;
 
-namespace SaasClinicas.APi.Controllers;
+namespace SaasClinicas.Api.Controllers;
 
 [ApiController]
 [Route("api/clinics")]

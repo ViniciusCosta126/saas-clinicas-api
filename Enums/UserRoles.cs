@@ -1,4 +1,4 @@
-namespace SaasClinicas.APi.Enums;
+namespace SaasClinicas.Api.Enums;
 
 
 public enum UserRole

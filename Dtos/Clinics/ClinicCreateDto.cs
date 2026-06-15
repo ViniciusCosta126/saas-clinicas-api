@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace SaasClinicas.APi.Dtos.Clinics;
+namespace SaasClinicas.Api.Dtos.Clinics;
 
 
 public class ClinicCreateDto

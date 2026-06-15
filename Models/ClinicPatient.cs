@@ -1,4 +1,4 @@
-namespace SaasClinicas.APi.Models;
+namespace SaasClinicas.Api.Models;
 
 public class ClinicPatient
 {

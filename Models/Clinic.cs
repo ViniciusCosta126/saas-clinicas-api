@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using SaasClinicas.APi.Models.Base;
+using SaasClinicas.Api.Models.Base;
 
-namespace SaasClinicas.APi.Models;
+namespace SaasClinicas.Api.Models;
 
 public class Clinic : BaseEntity
 {
