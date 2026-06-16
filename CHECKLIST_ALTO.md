@@ -10,7 +10,7 @@
 - [ ] Seguir padrão do `ClinicController`
 - [ ] Usar DTOs criados na fase crítica
 - [ ] Implementar soft delete
-- [ ] Adicionar AutoMapper profiles
+- [x] Adicionar AutoMapper profiles
 
 **Esforço**: 2-3 horas
 **Impacto**: ALTO - Funcionalidade essencial
