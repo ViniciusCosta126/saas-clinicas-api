@@ -19,4 +19,7 @@ public class PatientCreateDto
     [Required]
     [RegularExpression(@"^\d{11}$")]
     public string Cpf { get; set; } = string.Empty;
+
+        [Required]
+    public int ClinicId { get; set; }
 }
