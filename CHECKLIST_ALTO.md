@@ -5,11 +5,11 @@
 ---
 
 ## 6. Criar Controllers para Patient e Professional
-- [ ] Implementar `Controllers/Patient.cs` com CRUD completo
-- [ ] Implementar `Controllers/Professional.cs` com CRUD completo
-- [ ] Seguir padrão do `ClinicController`
-- [ ] Usar DTOs criados na fase crítica
-- [ ] Implementar soft delete
+- [x] Implementar `Controllers/Patient.cs` com CRUD completo
+- [x] Implementar `Controllers/Professional.cs` com CRUD completo
+- [x] Seguir padrão do `ClinicController`
+- [x] Usar DTOs criados na fase crítica
+- [x] Implementar soft delete
 - [x] Adicionar AutoMapper profiles
 
 **Esforço**: 2-3 horas
