@@ -17,6 +17,8 @@ builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<ClinicProfile>();
     cfg.AddProfile<UserProfile>();
+    cfg.AddProfile<ProfessionalProfile>();
+    cfg.AddProfile<PatientProfile>();
 });
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 var app = builder.Build();
