@@ -32,10 +32,10 @@
 
 ## 3. Criar DTOs para User, Patient, Professional
 - [x] Criar pasta `Dtos/Users/` com Create, Response, Update
-- [ ] Criar pasta `Dtos/Patients/` com Create, Response, Update
-- [ ] Criar pasta `Dtos/Professionals/` com Create, Response, Update
+- [x] Criar pasta `Dtos/Patients/` com Create, Response, Update
+- [x] Criar pasta `Dtos/Professionals/` com Create, Response, Update
 - [x] Não expor senhas em responses
-- [ ] Validações básicas nos DTOs
+- [x] Validações básicas nos DTOs
 
 **Esforço**: 1 hora
 **Impacto**: ALTO - Segurança e consistência
@@ -43,7 +43,7 @@
 ---
 
 ## 4. Implementar Autenticação Básica
-- [ ] Adicionar hash de senhas (BCrypt)
+- [x] Adicionar hash de senhas (BCrypt)
 - [ ] Criar endpoint `/api/auth/login`
 - [ ] Criar endpoint `/api/auth/register`
 - [ ] Implementar JWT ou Identity
