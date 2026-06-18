@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaasClinicas.Api.Data;
@@ -23,6 +24,7 @@ public class UsersController : ControllerBase
         _passwordHashService = passwordHashService;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<UserResponseDto>>> Get()
     {
@@ -33,6 +35,7 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<UserResponseDto>> GetById(int id)
     {
@@ -42,6 +45,7 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Post(UserCreateDto dto)
     {
@@ -56,6 +60,7 @@ public class UsersController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = user.Id }, response);
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -70,6 +75,7 @@ public class UsersController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, UserUpdateDto dto)
     {

@@ -1,4 +1,7 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SaasClinicas.Api.Data;
 using SaasClinicas.Api.Mappings;
 using SaasClinicas.Api.Services;
@@ -21,6 +24,20 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<PatientProfile>();
 });
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
+builder.Services.AddScoped<ITokenService,TokenService>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+   options.TokenValidationParameters = new TokenValidationParameters
+   {
+     ValidateIssuerSigningKey =true,
+     IssuerSigningKey =new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:key"]!)),
+     ValidateIssuer = true,
+     ValidIssuer = builder.Configuration["Jwt:Issuer"],
+     ValidateAudience = true,
+     ValidAudience = builder.Configuration["Jwt:Audience"],
+     ValidateLifetime = true  
+   }; 
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,6 +48,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

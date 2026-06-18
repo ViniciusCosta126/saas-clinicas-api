@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaasClinicas.Api.Data;
@@ -20,6 +21,7 @@ public class ProfessionalsController : ControllerBase
         _mapper = mapper;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<ProfessionalResponseDto>>> Get()
     {
@@ -28,6 +30,7 @@ public class ProfessionalsController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<ProfessionalResponseDto>> GetById(int id)
     {
@@ -40,6 +43,7 @@ public class ProfessionalsController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Post(ProfessionalCreateDto dto)
     {
@@ -52,6 +56,7 @@ public class ProfessionalsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = professional.Id }, response);
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -65,7 +70,8 @@ public class ProfessionalsController : ControllerBase
 
         return NoContent();
     }
-
+    
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, ProfessionalUpdateDto dto)
     {

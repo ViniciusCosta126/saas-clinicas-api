@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaasClinicas.Api.Data;
@@ -20,6 +21,7 @@ public class PatientsController : ControllerBase
         _mapper = mapper;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<PatientResponseDto>>> Get()
     {
@@ -30,6 +32,7 @@ public class PatientsController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<PatientResponseDto>> GetById(int id)
     {
@@ -42,6 +45,7 @@ public class PatientsController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult> Post(PatientCreateDto dto)
     {
@@ -54,6 +58,7 @@ public class PatientsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = patient.Id }, response);
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(int id)
     {
@@ -68,6 +73,7 @@ public class PatientsController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(int id, PatientUpdateDto dto)
     {

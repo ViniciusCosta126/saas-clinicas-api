@@ -44,10 +44,10 @@
 
 ## 4. Implementar Autenticação Básica
 - [x] Adicionar hash de senhas (BCrypt)
-- [ ] Criar endpoint `/api/auth/login`
-- [ ] Criar endpoint `/api/auth/register`
-- [ ] Implementar JWT ou Identity
-- [ ] Proteger endpoints com `[Authorize]`
+- [x] Criar endpoint `/api/auth/login`
+- [x] Criar endpoint `/api/auth/register`
+- [x] Implementar JWT ou Identity
+- [x] Proteger endpoints com `[Authorize]`
 
 **Esforço**: 2-3 horas
 **Impacto**: CRÍTICO - Segurança
