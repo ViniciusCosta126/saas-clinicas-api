@@ -1,8 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace SaasClinicas.Api.Dtos.Patients;
-
-
 public class PatientResponseDto
 {
     public int Id { get; set; }

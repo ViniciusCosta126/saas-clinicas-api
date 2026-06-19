@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace SaasClinicas.Api.Dtos.Professionals;
 
 public class ProfessionalResponseDto

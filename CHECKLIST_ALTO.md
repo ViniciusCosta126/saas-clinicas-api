@@ -34,7 +34,7 @@
 - [ ] Validar CPF único
 - [ ] Validar Email único
 - [ ] Validar relacionamentos
-- [ ] Remover validações duplicadas dos DTOs
+- [x] Remover validações duplicadas dos DTOs
 
 **Esforço**: 1-2 horas
 **Impacto**: ALTO - Integridade de dados
@@ -42,9 +42,9 @@
 ---
 
 ## 9. Remover Validação Duplicada
-- [ ] Centralizar validações em Models ou FluentValidation
-- [ ] Remover `[Required]`, `[StringLength]` dos DTOs
-- [ ] Manter apenas em Models
+- [x] Centralizar validações em Models ou FluentValidation
+- [x] Remover `[Required]`, `[StringLength]` dos DTOs
+- [x] Manter apenas em Models
 
 **Esforço**: 30 min
 **Impacto**: MÉDIO - DRY principle
