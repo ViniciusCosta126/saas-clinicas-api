@@ -78,31 +78,74 @@ SaasClinicas.Api/
 ### Fluxo de Autenticação
 
 1. **Registro**: `POST /api/auth/register`
-   - Cria uma nova clínica e usuário
-   - Retorna JWT token
+   - Cria uma nova clínica e usuário em uma transação
+   - Retorna JWT token com IDs da clínica e usuário
 
 2. **Login**: `POST /api/auth/login`
    - Autentica usuário com email e senha
+   - Verifica hash de senha com BCrypt
    - Retorna JWT token
 
 3. **Autorização**: Endpoints protegidos com `[Authorize]`
    - Requer Bearer token no header
+   - Token válido por 2 horas
 
 ### Configuração JWT
 
 ```json
 {
   "Jwt": {
-    "Key": "sua-chave-secreta-aqui",
+    "Key": "sua-chave-secreta-aqui-minimo-32-caracteres",
     "Issuer": "SaasClinicas",
     "Audience": "SaasClinicasUsers"
   }
 }
 ```
 
+### Usando Bearer Token no Swagger
+
+1. Clique no botão **"Authorize"** no canto superior direito
+2. Cole o token JWT recebido no login/registro
+3. Formato: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+4. Clique em "Authorize"
+5. Agora todos os endpoints protegidos funcionarão no Swagger
+
 ---
 
-## 🔑 Recursos Principais
+## �️ Tratamento de Erros Global
+
+A API implementa um middleware centralizado para tratamento de exceções:
+
+### Resposta de Erro Padrão
+
+```json
+{
+  "success": false,
+  "message": "Ocorreu um erro no servidor.",
+  "error": "Attempted to divide by zero.",
+  "timeStamp": "2026-06-19T10:49:00Z",
+  "traceId": "0HN1GKDQNKQ5V:00000001"
+}
+```
+
+### Comportamento por Ambiente
+
+- **Development**: Expõe mensagem de erro detalhada
+- **Production**: Oculta detalhes técnicos (apenas mensagem genérica)
+
+### Códigos HTTP Retornados
+
+| Exceção | Status HTTP |
+|---------|------------|
+| `UnauthorizedAccessException` | 401 Unauthorized |
+| `KeyNotFoundException` | 404 Not Found |
+| `ArgumentException` | 400 Bad Request |
+| `InvalidOperationException` | 400 Bad Request |
+| Outras exceções | 500 Internal Server Error |
+
+---
+
+## � Recursos Principais
 
 ### 1. Autenticação
 - **POST** `/api/auth/login` - Login de usuário
@@ -254,22 +297,45 @@ Content-Type: application/json
 1. **Autenticação JWT**
    - Tokens com expiração de 2 horas
    - Validação de issuer, audience e lifetime
+   - Suporte a Bearer token no Swagger
 
 2. **Hash de Senhas**
    - BCrypt com salt automático
    - Senhas nunca são expostas em responses
+   - Verificação segura com `BCrypt.Verify()`
 
 3. **Soft Delete**
    - Registros não são deletados, apenas marcados como deletados
    - Campo `DeletedAt` em todas as entidades
+   - Preserva auditoria de dados
 
 4. **Validações de Entrada**
    - Data Annotations em DTOs
    - Validação de email, CPF, telefone
+   - Regex para formatos específicos
 
 5. **Autorização**
    - `[Authorize]` em endpoints protegidos
-   - Controle de acesso por role
+   - Controle de acesso por role (Admin, Professional, Receptionist, Financial)
+   - Transações para operações críticas
+
+6. **Tratamento de Erros Seguro**
+   - Middleware centralizado
+   - Não expõe stack traces em produção
+   - TraceId para rastreamento
+
+### Checklist de Segurança
+
+- [x] Autenticação JWT implementada
+- [x] Senhas com hash BCrypt
+- [x] Endpoints protegidos com `[Authorize]`
+- [x] Soft delete implementado
+- [x] Validações em DTOs
+- [x] Tratamento de erros seguro
+- [ ] CPF/Email únicos validados
+- [ ] HTTPS obrigatório
+- [ ] Rate limiting
+- [ ] CORS configurado
 
 ---
 
@@ -344,6 +410,51 @@ public class Professional : BaseEntity
 
 ---
 
+## 🏗️ Arquitetura e Padrões
+
+### Padrões Implementados
+
+1. **DTO Pattern**
+   - Separação entre modelos de domínio e API
+   - Validações em DTOs
+   - Segurança (não expõe senhas)
+
+2. **AutoMapper**
+   - Mapeamento automático entre entidades e DTOs
+   - Profiles centralizados
+   - Reduz código boilerplate
+
+3. **Dependency Injection**
+   - Serviços registrados em Program.cs
+   - Loose coupling entre componentes
+   - Facilita testes
+
+4. **Soft Delete**
+   - Registros não são deletados, apenas marcados
+   - Campo `DeletedAt` em BaseEntity
+   - Preserva histórico de dados
+
+5. **Middleware de Exceção**
+   - Tratamento centralizado de erros
+   - Respostas padronizadas
+   - Logging automático
+
+### Camadas da Aplicação
+
+```
+┌─────────────────────────────┐
+│   Controllers (API)         │
+├─────────────────────────────┤
+│   Services (Negócio)        │
+├─────────────────────────────┤
+│   Data Access (EF Core)     │
+├─────────────────────────────┤
+│   Database (SQLite)         │
+└─────────────────────────────┘
+```
+
+---
+
 ## 🧪 Testes
 
 Testes unitários podem ser adicionados usando xUnit ou NUnit:
@@ -372,13 +483,14 @@ public async Task Login_WithValidCredentials_ReturnsToken()
 ## 📈 Próximas Melhorias
 
 - [ ] Testes unitários (xUnit)
-- [ ] Tratamento global de erros (Middleware)
-- [ ] Validações de negócio (FluentValidation)
+- [x] Tratamento global de erros (Middleware)
+- [ ] Validações de negócio (CPF/Email únicos)
 - [ ] Índices e constraints no banco
 - [ ] Repository Pattern
 - [ ] Logging centralizado
 - [ ] Rate limiting
 - [ ] CORS configurado
+- [ ] FluentValidation para validações complexas
 
 ---
 
@@ -397,6 +509,40 @@ Desenvolvido como projeto de aprendizado em ASP.NET Core.
 ## 📞 Suporte
 
 Para dúvidas ou sugestões, abra uma issue no repositório.
+
+---
+
+---
+
+## 📊 Status do Projeto
+
+### Fase Crítica ✅ (100% Completa)
+- [x] DbContext com todos os DbSets
+- [x] Controllers CRUD (User, Patient, Professional, Clinic)
+- [x] DTOs para todas as entidades
+- [x] Autenticação JWT com Login/Register
+- [x] Namespaces padronizados
+
+### Fase Alta 🔶 (40% Completa)
+- [x] Controllers Patient e Professional
+- [x] Global Exception Handler
+- [ ] Validações de negócio (CPF/Email únicos)
+- [ ] Remover validações duplicadas
+- [ ] Índices e constraints no banco
+
+### Fase Média 🟡 (0% Completa)
+- [ ] Repository Pattern
+- [ ] Logging centralizado
+- [ ] Testes unitários
+- [ ] Global soft delete
+- [ ] Refatoração de controllers
+
+### Fase Baixa 🟢 (0% Completa)
+- [ ] API versioning
+- [ ] CORS e segurança avançada
+- [ ] Seed data e migrations
+- [ ] Documentação completa
+- [ ] Performance optimizations
 
 ---
 

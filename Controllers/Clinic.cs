@@ -52,8 +52,7 @@ public class ClinicController : ControllerBase
             .FirstOrDefaultAsync();
 
         if (clinic == null)
-            return NotFound();
-
+            throw new KeyNotFoundException("Clinica não encontrada");
         var response = _mapper.Map<ClinicResponseDto>(clinic);
 
         return Ok(response);

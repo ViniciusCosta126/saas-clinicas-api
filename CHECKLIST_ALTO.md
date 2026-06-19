@@ -18,10 +18,10 @@
 ---
 
 ## 7. Implementar Global Exception Handler
-- [ ] Criar middleware de tratamento de erros
-- [ ] Retornar respostas padronizadas em JSON
-- [ ] Logar exceções
-- [ ] Não expor stack traces em produção
+- [x] Criar middleware de tratamento de erros
+- [x] Retornar respostas padronizadas em JSON
+- [x] Logar exceções
+- [x] Não expor stack traces em produção
 
 **Arquivo**: `Middleware/ExceptionHandlingMiddleware.cs`
 **Esforço**: 1 hora
