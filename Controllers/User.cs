@@ -40,7 +40,7 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<UserResponseDto>> GetById(int id)
     {
         User? user = await _context.Users.Where(u => u.Id == id && u.DeletedAt == null).FirstOrDefaultAsync();
-        if (user == null) return NotFound();
+        if (user == null) throw new KeyNotFoundException("Usuario não encontrado");
         var response = _mapper.Map<UserResponseDto>(user);
         return Ok(response);
     }
@@ -65,7 +65,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         User? user = await _context.Users.Where(u => u.Id == id && u.DeletedAt == null).FirstOrDefaultAsync();
-        if (user == null) return NotFound();
+        if (user == null) throw new KeyNotFoundException("Usuario não encontrado");
 
         user.DeletedAt = DateTime.UtcNow;
         _context.Update(user);
@@ -80,7 +80,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Put(int id, UserUpdateDto dto)
     {
         User? user = await _context.Users.Where(u => u.Id == id && u.DeletedAt == null).FirstOrDefaultAsync();
-        if (user == null) return NotFound();
+        if (user == null) throw new KeyNotFoundException("Usuario não encontrado");
 
         _mapper.Map(dto, user);
 

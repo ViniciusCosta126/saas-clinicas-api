@@ -38,7 +38,8 @@ public class PatientsController : ControllerBase
     {
         Patient? patient = await _context.Patients.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
 
-        if (patient == null) return NotFound();
+        if (patient == null) 
+            throw new KeyNotFoundException("Clinica não encontrada");
 
         var response = _mapper.Map<PatientResponseDto>(patient);
 
@@ -64,7 +65,7 @@ public class PatientsController : ControllerBase
     {
         Patient? patient = await _context.Patients.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
 
-        if (patient == null) return NotFound();
+        if (patient == null) throw new KeyNotFoundException("Paciente não encontrado");
 
         patient.DeletedAt = DateTime.UtcNow;
         _context.Update(patient);
@@ -79,7 +80,7 @@ public class PatientsController : ControllerBase
     {
         Patient? patient = await _context.Patients.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
 
-        if (patient == null) return NotFound();
+        if (patient == null) throw new KeyNotFoundException("Paciente não encontrado");
 
         _mapper.Map(dto, patient);
         _context.Update(patient);

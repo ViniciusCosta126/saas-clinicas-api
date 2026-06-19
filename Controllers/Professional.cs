@@ -36,7 +36,7 @@ public class ProfessionalsController : ControllerBase
     {
         Professional? professional = await _context.Professionals.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
 
-        if (professional == null) return NotFound();
+        if (professional == null) throw new KeyNotFoundException("Profisional não encontrado");
 
         var response = _mapper.Map<ProfessionalResponseDto>(professional);
 
@@ -62,7 +62,7 @@ public class ProfessionalsController : ControllerBase
     {
         Professional? professional = await _context.Professionals.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
 
-        if (professional == null) return NotFound();
+        if (professional == null) throw new KeyNotFoundException("Profisional não encontrado");
 
         professional.DeletedAt = DateTime.UtcNow;
         _context.Update(professional);
@@ -77,7 +77,7 @@ public class ProfessionalsController : ControllerBase
     {
         Professional? professional = await _context.Professionals.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
 
-        if (professional == null) return NotFound();
+        if (professional == null) throw new KeyNotFoundException("Profisional não encontrado");
 
         _mapper.Map(dto, professional);
         professional.UpdatedAt = DateTime.UtcNow;

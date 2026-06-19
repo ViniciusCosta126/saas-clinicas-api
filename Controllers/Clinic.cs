@@ -64,7 +64,8 @@ public class ClinicController : ControllerBase
     {
         Clinic? clinic = await _context.Clinics.FirstOrDefaultAsync(c => c.Id == id && c.DeletedAt == null);
 
-        if (clinic == null) return NotFound();
+        if (clinic == null)
+            throw new KeyNotFoundException("Clinica não encontrada");
 
         _mapper.Map(dto, clinic);
 
@@ -81,7 +82,8 @@ public class ClinicController : ControllerBase
     {
         Clinic? clinic = await _context.Clinics.FirstOrDefaultAsync(c => c.Id == id && c.DeletedAt == null);
 
-        if (clinic == null) return NotFound();
+        if (clinic == null)
+            throw new KeyNotFoundException("Clinica não encontrada");
 
         clinic.DeletedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();

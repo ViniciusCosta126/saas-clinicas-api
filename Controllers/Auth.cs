@@ -29,11 +29,11 @@ public class AuthController : ControllerBase
     {
         User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
 
-        if (user == null) return Unauthorized();
+        if (user == null) throw new UnauthorizedAccessException("Email de usuario invalido.");
 
         bool validPassword = _passwordHashService.VerifyPassword(dto.Password, user.Password);
 
-        if (!validPassword) return Unauthorized();
+        if (!validPassword) throw new UnauthorizedAccessException("Senha do usuario incorreta");;
 
         var token = _tokenService.CreateToken(user);
 
@@ -46,11 +46,11 @@ public class AuthController : ControllerBase
     {
         var existingClinic = await _context.Clinics.FirstOrDefaultAsync(c => c.Email == dto.Clinic.Email);
 
-        if (existingClinic != null) return BadRequest("Email da clinica ja cadastrado.");
+        if (existingClinic != null) throw new BadHttpRequestException("Email de clinica ja cadastrado.");
 
         var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.User.Email);
 
-        if (existingUser != null) return BadRequest("Email do usuario ja cadastrado");
+        if (existingUser != null) throw new BadHttpRequestException("Email do usuario ja cadastrado");
 
         using (var transaction = await _context.Database.BeginTransactionAsync())
         {
@@ -88,7 +88,7 @@ public class AuthController : ControllerBase
             catch (Exception e)
             {
                 await transaction.RollbackAsync();
-                return BadRequest($"Erro ao registrar: {e.Message}");
+                throw new BadHttpRequestException($"Erro ao registrar: {e.Message}");
             }
         }
     }
