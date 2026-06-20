@@ -1,10 +1,11 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using SaasClinicas.Api.Data;
 using SaasClinicas.Api.Dtos.Auth;
 using SaasClinicas.Api.Services;
 using SaasClinicas.Api.Models;
 using Microsoft.EntityFrameworkCore;
-using SaasClinicas.Api.Enums;
+using SaasClinicas.Api.Validators.Auth;
 
 namespace SaasClinicas.Api.Controllers;
 
@@ -27,30 +28,29 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto dto)
     {
+        var validator = new LoginValidator();
+        var result = await validator.ValidateAsync(dto);
+        if (!result.IsValid) throw new ValidationException(result.Errors);
+
         User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
 
         if (user == null) throw new UnauthorizedAccessException("Email de usuario invalido.");
 
         bool validPassword = _passwordHashService.VerifyPassword(dto.Password, user.Password);
 
-        if (!validPassword) throw new UnauthorizedAccessException("Senha do usuario incorreta");;
+        if (!validPassword) throw new UnauthorizedAccessException("Senha do usuario incorreta");
 
         var token = _tokenService.CreateToken(user);
 
         return Ok(new { token });
-
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto dto)
     {
-        var existingClinic = await _context.Clinics.FirstOrDefaultAsync(c => c.Email == dto.Clinic.Email);
-
-        if (existingClinic != null) throw new BadHttpRequestException("Email de clinica ja cadastrado.");
-
-        var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.User.Email);
-
-        if (existingUser != null) throw new BadHttpRequestException("Email do usuario ja cadastrado");
+        var validator = new RegisterValidator(_context);
+        var result = await validator.ValidateAsync(dto);
+        if (!result.IsValid) throw new ValidationException(result.Errors);
 
         using (var transaction = await _context.Database.BeginTransactionAsync())
         {
@@ -73,7 +73,7 @@ public class AuthController : ControllerBase
                     Phone = dto.User.Phone,
                     Cpf = dto.User.Cpf,
                     Password = _passwordHashService.HashPassword(dto.User.Password),
-                    Role = (UserRole)dto.User.Role,
+                    Role = 0,
                     ClinicId = clinic.Id
                 };
                 _context.Users.Add(user);

@@ -32,7 +32,4 @@ public class UserRegisterDto
     [Required]
     [StringLength(255, MinimumLength = 6)]
     public string Password { get; set; } = string.Empty;
-
-    [Required]
-    public int Role { get; set; }
 }

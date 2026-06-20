@@ -1,10 +1,12 @@
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaasClinicas.Api.Data;
 using SaasClinicas.Api.Dtos.Patients;
 using SaasClinicas.Api.Models;
+using SaasClinicas.Api.Validators.Patients;
 
 namespace SaasClinicas.Api.Controllers;
 
@@ -38,7 +40,7 @@ public class PatientsController : ControllerBase
     {
         Patient? patient = await _context.Patients.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
 
-        if (patient == null) 
+        if (patient == null)
             throw new KeyNotFoundException("Clinica não encontrada");
 
         var response = _mapper.Map<PatientResponseDto>(patient);
@@ -81,6 +83,11 @@ public class PatientsController : ControllerBase
         Patient? patient = await _context.Patients.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
 
         if (patient == null) throw new KeyNotFoundException("Paciente não encontrado");
+
+        var validator = new PatientUpdateValidator(_context, id);
+        var result = await validator.ValidateAsync(dto);
+
+        if (!result.IsValid) throw new ValidationException(result.Errors);
 
         _mapper.Map(dto, patient);
         _context.Update(patient);

@@ -1,10 +1,12 @@
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaasClinicas.Api.Data;
 using SaasClinicas.Api.Dtos.Clinics;
 using SaasClinicas.Api.Models;
+using SaasClinicas.Api.Validators.Clinics;
 
 namespace SaasClinicas.Api.Controllers;
 
@@ -66,6 +68,10 @@ public class ClinicController : ControllerBase
 
         if (clinic == null)
             throw new KeyNotFoundException("Clinica não encontrada");
+
+        var validator = new ClinicUpdateValidator(_context, id);
+        var result = await validator.ValidateAsync(dto);
+        if (!result.IsValid) throw new ValidationException(result.Errors);
 
         _mapper.Map(dto, clinic);
 

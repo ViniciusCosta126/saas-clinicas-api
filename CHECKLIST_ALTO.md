@@ -30,10 +30,10 @@
 ---
 
 ## 8. Adicionar Validação de Negócio
-- [ ] Implementar FluentValidation
-- [ ] Validar CPF único
-- [ ] Validar Email único
-- [ ] Validar relacionamentos
+- [x] Implementar FluentValidation
+- [x] Validar CPF único
+- [x] Validar Email único
+- [x] Validar relacionamentos
 - [x] Remover validações duplicadas dos DTOs
 
 **Esforço**: 1-2 horas

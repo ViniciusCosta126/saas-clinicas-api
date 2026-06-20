@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using SaasClinicas.Api.Data;
 using SaasClinicas.Api.Dtos.Users;
 using SaasClinicas.Api.Models;
 using SaasClinicas.Api.Services;
+using SaasClinicas.Api.Validators.Users;
 
 namespace SaasClinicas.Api.Controllers;
 
@@ -79,8 +81,14 @@ public class UsersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, UserUpdateDto dto)
     {
+
         User? user = await _context.Users.Where(u => u.Id == id && u.DeletedAt == null).FirstOrDefaultAsync();
         if (user == null) throw new KeyNotFoundException("Usuario não encontrado");
+
+        var validator = new UserUpdateValidator(_context, user.Id);
+        var result = await validator.ValidateAsync(dto);
+
+        if (!result.IsValid) throw new ValidationException(result.Errors);
 
         _mapper.Map(dto, user);
 

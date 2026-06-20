@@ -1,10 +1,12 @@
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SaasClinicas.Api.Data;
 using SaasClinicas.Api.Dtos.Professionals;
 using SaasClinicas.Api.Models;
+using SaasClinicas.Api.Validators.Professionals;
 
 namespace SaasClinicas.Api.Controllers;
 
@@ -70,7 +72,7 @@ public class ProfessionalsController : ControllerBase
 
         return NoContent();
     }
-    
+
     [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, ProfessionalUpdateDto dto)
@@ -78,6 +80,10 @@ public class ProfessionalsController : ControllerBase
         Professional? professional = await _context.Professionals.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
 
         if (professional == null) throw new KeyNotFoundException("Profisional não encontrado");
+
+        var validator = new ProfessionalUpdateValidator(_context, id);
+        var result = await validator.ValidateAsync(dto);
+        if (!result.IsValid) throw new ValidationException(result.Errors);
 
         _mapper.Map(dto, professional);
         professional.UpdatedAt = DateTime.UtcNow;
