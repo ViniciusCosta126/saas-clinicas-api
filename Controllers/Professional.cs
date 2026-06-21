@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SaasClinicas.Api.Data;
 using SaasClinicas.Api.Dtos.Professionals;
 using SaasClinicas.Api.Models;
+using SaasClinicas.Api.Repositories;
 using SaasClinicas.Api.Validators.Professionals;
 
 namespace SaasClinicas.Api.Controllers;
@@ -14,12 +15,12 @@ namespace SaasClinicas.Api.Controllers;
 [Route("api/professionals")]
 public class ProfessionalsController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IRepository<Professional> _repository;
     private readonly IMapper _mapper;
 
-    public ProfessionalsController(ApplicationDbContext context, IMapper mapper)
+    public ProfessionalsController(IRepository<Professional> repository, IMapper mapper)
     {
-        _context = context;
+        _repository = repository;
         _mapper = mapper;
     }
 
@@ -27,7 +28,7 @@ public class ProfessionalsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<ProfessionalResponseDto>>> Get()
     {
-        List<Professional> professionals = await _context.Professionals.Where(p => p.DeletedAt == null).ToListAsync();
+        var professionals = await _repository.GetAllAsync();
         var response = _mapper.Map<List<ProfessionalResponseDto>>(professionals);
         return Ok(response);
     }
@@ -36,7 +37,7 @@ public class ProfessionalsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<ProfessionalResponseDto>> GetById(int id)
     {
-        Professional? professional = await _context.Professionals.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
+        Professional? professional = await _repository.GetByIdAsync(id);
 
         if (professional == null) throw new KeyNotFoundException("Profisional não encontrado");
 
@@ -51,24 +52,21 @@ public class ProfessionalsController : ControllerBase
     {
         var professional = _mapper.Map<Professional>(dto);
 
-        _context.Professionals.Add(professional);
-        await _context.SaveChangesAsync();
+        var createdProfissional = await _repository.AddAsync(professional);
 
-        var response = _mapper.Map<ProfessionalResponseDto>(professional);
-        return CreatedAtAction(nameof(GetById), new { id = professional.Id }, response);
+        var response = _mapper.Map<ProfessionalResponseDto>(createdProfissional);
+        return CreatedAtAction(nameof(GetById), new { id = createdProfissional.Id }, response);
     }
 
     [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        Professional? professional = await _context.Professionals.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
+        Professional? professional = await _repository.GetByIdAsync(id);
 
         if (professional == null) throw new KeyNotFoundException("Profisional não encontrado");
 
-        professional.DeletedAt = DateTime.UtcNow;
-        _context.Update(professional);
-        await _context.SaveChangesAsync();
+        await _repository.DeleteAsync(professional);
 
         return NoContent();
     }
@@ -77,18 +75,14 @@ public class ProfessionalsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, ProfessionalUpdateDto dto)
     {
-        Professional? professional = await _context.Professionals.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
+        Professional? professional = await _repository.GetByIdAsync(id);
 
         if (professional == null) throw new KeyNotFoundException("Profisional não encontrado");
 
-        var validator = new ProfessionalUpdateValidator(_context, id);
-        var result = await validator.ValidateAsync(dto);
-        if (!result.IsValid) throw new ValidationException(result.Errors);
 
+        dto.Id = id;
         _mapper.Map(dto, professional);
-        professional.UpdatedAt = DateTime.UtcNow;
-        _context.Update(professional);
-        await _context.SaveChangesAsync();
+        await _repository.UpdateAsync(professional);
 
         var response = _mapper.Map<ProfessionalResponseDto>(professional);
 

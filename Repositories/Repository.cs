@@ -1,0 +1,56 @@
+
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using SaasClinicas.Api.Data;
+using SaasClinicas.Api.Models.Base;
+
+namespace SaasClinicas.Api.Repositories;
+
+public class Repository<T> : IRepository<T> where T : BaseEntity
+{
+
+    private readonly ApplicationDbContext _context;
+    private readonly DbSet<T> _dbSet;
+
+    public Repository(ApplicationDbContext context)
+    {
+        _context = context;
+        _dbSet = _context.Set<T>();
+    }
+
+
+    public async Task<IEnumerable<T>> GetAllAsync()
+    {
+        return await _dbSet.Where(t => t.DeletedAt == null).ToListAsync();
+    }
+
+    public async Task<T?> GetByIdAsync(int id)
+    {
+        return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && e.DeletedAt == null);
+    }
+
+    public async Task<T> AddAsync(T entity)
+    {
+        await _dbSet.AddAsync(entity);
+        await _context.SaveChangesAsync();
+        return entity;
+    }
+    public async Task UpdateAsync(T entity)
+    {
+        entity.UpdatedAt = DateTime.UtcNow;
+        _dbSet.Update(entity);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(T entity)
+    {
+        entity.DeletedAt = DateTime.UtcNow;
+        _dbSet.Update(entity);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await _dbSet.AnyAsync(predicate);
+    }
+}

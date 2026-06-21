@@ -24,6 +24,7 @@ SaasClinicas é uma plataforma SaaS (Software as a Service) que permite o gerenc
 | AutoMapper | 13.0.1 | Mapeamento de objetos |
 | BCrypt.Net | 0.1.0 | Hash de senhas |
 | JWT (System.IdentityModel.Tokens.Jwt) | - | Autenticação |
+| FluentValidation | 11.9.2 | Validação de dados |
 | Swashbuckle | 6.4.0 | Documentação Swagger |
 
 ---
@@ -63,6 +64,17 @@ SaasClinicas.Api/
 │   └── ProfessionalProfile.cs
 ├── Data/                # Contexto do banco
 │   └── ApplicationDbContext.cs
+├── Repositories/        # Repository Pattern
+│   ├── IRepository.cs
+│   └── Repository.cs
+├── Validators/          # FluentValidation
+│   ├── Auth/
+│   ├── Clinics/
+│   ├── Users/
+│   ├── Patients/
+│   └── Professionals/
+├── Middleware/          # Middlewares customizados
+│   └── ExceptionMiddleware.cs
 ├── Migrations/          # Migrações do EF Core
 ├── Enums/               # Enumerações
 │   └── UserRoles.cs
@@ -290,6 +302,49 @@ Content-Type: application/json
 
 ---
 
+## ✅ Validações com FluentValidation
+
+A API implementa validações robustas e centralizadas usando FluentValidation:
+
+### Validadores Implementados
+
+1. **UserCreateValidator / UserUpdateValidator**
+   - Name: 4-255 caracteres
+   - Email: Formato válido e único
+   - Phone: 10-11 dígitos
+   - CPF: 11 dígitos e único
+   - Password: 6-255 caracteres
+   - ClinicId: Deve existir no banco
+
+2. **PatientCreateValidator / PatientUpdateValidator**
+   - Name: 4-255 caracteres
+   - Email: Formato válido e único
+   - Phone: 10-11 dígitos
+   - CPF: 11 dígitos e único
+   - Birthday: Data obrigatória
+
+3. **ProfessionalCreateValidator / ProfessionalUpdateValidator**
+   - Name: 4-255 caracteres
+   - Email: Formato válido e único
+   - SessionPrice: Maior que 0
+   - ClinicId: Deve existir no banco
+
+4. **ClinicCreateValidator / ClinicUpdateValidator**
+   - ClinicName: 4-255 caracteres
+   - ResponsibleName: 4-255 caracteres
+   - Email: Formato válido e único
+   - Phone: 10-11 dígitos
+
+### Características
+
+- ✅ Validações assíncronas (email/CPF únicos)
+- ✅ Validação de relacionamentos
+- ✅ Mensagens de erro customizadas
+- ✅ Exclusão automática do próprio registro em Updates
+- ✅ Registro automático no DI container
+
+---
+
 ## 🔒 Segurança
 
 ### Implementações de Segurança
@@ -308,11 +363,13 @@ Content-Type: application/json
    - Registros não são deletados, apenas marcados como deletados
    - Campo `DeletedAt` em todas as entidades
    - Preserva auditoria de dados
+   - Implementado no Repository Pattern
 
 4. **Validações de Entrada**
-   - Data Annotations em DTOs
+   - FluentValidation centralizado
    - Validação de email, CPF, telefone
    - Regex para formatos específicos
+   - Validações assíncronas
 
 5. **Autorização**
    - `[Authorize]` em endpoints protegidos
@@ -323,6 +380,7 @@ Content-Type: application/json
    - Middleware centralizado
    - Não expõe stack traces em produção
    - TraceId para rastreamento
+   - Índices únicos no banco de dados
 
 ### Checklist de Segurança
 
@@ -330,9 +388,10 @@ Content-Type: application/json
 - [x] Senhas com hash BCrypt
 - [x] Endpoints protegidos com `[Authorize]`
 - [x] Soft delete implementado
-- [x] Validações em DTOs
+- [x] Validações com FluentValidation
 - [x] Tratamento de erros seguro
-- [ ] CPF/Email únicos validados
+- [x] CPF/Email únicos validados
+- [x] Índices únicos no banco de dados
 - [ ] HTTPS obrigatório
 - [ ] Rate limiting
 - [ ] CORS configurado
@@ -416,28 +475,42 @@ public class Professional : BaseEntity
 
 1. **DTO Pattern**
    - Separação entre modelos de domínio e API
-   - Validações em DTOs
+   - Validações centralizadas com FluentValidation
    - Segurança (não expõe senhas)
 
-2. **AutoMapper**
+2. **Repository Pattern**
+   - Interface genérica `IRepository<T>`
+   - Implementação `Repository<T>` centralizada
+   - Facilita testes unitários
+   - Abstração do acesso a dados
+
+3. **AutoMapper**
    - Mapeamento automático entre entidades e DTOs
    - Profiles centralizados
    - Reduz código boilerplate
 
-3. **Dependency Injection**
+4. **Dependency Injection**
    - Serviços registrados em Program.cs
    - Loose coupling entre componentes
    - Facilita testes
 
-4. **Soft Delete**
+5. **FluentValidation**
+   - Validações centralizadas fora dos DTOs
+   - Validações assíncronas (email/CPF únicos)
+   - Validação de relacionamentos
+   - Mensagens customizadas
+
+6. **Soft Delete**
    - Registros não são deletados, apenas marcados
    - Campo `DeletedAt` em BaseEntity
    - Preserva histórico de dados
+   - Implementado no Repository
 
-5. **Middleware de Exceção**
+7. **Middleware de Exceção**
    - Tratamento centralizado de erros
    - Respostas padronizadas
    - Logging automático
+   - TraceId para rastreamento
 
 ### Camadas da Aplicação
 
@@ -484,13 +557,14 @@ public async Task Login_WithValidCredentials_ReturnsToken()
 
 - [ ] Testes unitários (xUnit)
 - [x] Tratamento global de erros (Middleware)
-- [ ] Validações de negócio (CPF/Email únicos)
-- [ ] Índices e constraints no banco
-- [ ] Repository Pattern
-- [ ] Logging centralizado
+- [x] Validações de negócio (CPF/Email únicos)
+- [x] Índices e constraints no banco
+- [x] Repository Pattern
+- [x] FluentValidation para validações complexas
+- [ ] Logging centralizado (Serilog)
 - [ ] Rate limiting
 - [ ] CORS configurado
-- [ ] FluentValidation para validações complexas
+- [ ] API versioning
 
 ---
 
@@ -523,15 +597,16 @@ Para dúvidas ou sugestões, abra uma issue no repositório.
 - [x] Autenticação JWT com Login/Register
 - [x] Namespaces padronizados
 
-### Fase Alta 🔶 (40% Completa)
+### Fase Alta ✅ (100% Completa)
 - [x] Controllers Patient e Professional
 - [x] Global Exception Handler
-- [ ] Validações de negócio (CPF/Email únicos)
-- [ ] Remover validações duplicadas
-- [ ] Índices e constraints no banco
+- [x] Validações de negócio (CPF/Email únicos)
+- [x] FluentValidation implementado
+- [x] Remover validações duplicadas
+- [x] Índices e constraints no banco
 
-### Fase Média 🟡 (0% Completa)
-- [ ] Repository Pattern
+### Fase Média 🟡 (20% Completa)
+- [x] Repository Pattern
 - [ ] Logging centralizado
 - [ ] Testes unitários
 - [ ] Global soft delete

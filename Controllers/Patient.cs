@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SaasClinicas.Api.Data;
 using SaasClinicas.Api.Dtos.Patients;
 using SaasClinicas.Api.Models;
+using SaasClinicas.Api.Repositories;
 using SaasClinicas.Api.Validators.Patients;
 
 namespace SaasClinicas.Api.Controllers;
@@ -14,12 +15,12 @@ namespace SaasClinicas.Api.Controllers;
 [Route("api/patients")]
 public class PatientsController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IRepository<Patient> _repository;
     private readonly IMapper _mapper;
 
-    public PatientsController(ApplicationDbContext context, IMapper mapper)
+    public PatientsController(IRepository<Patient> repository, IMapper mapper)
     {
-        _context = context;
+        _repository = repository;
         _mapper = mapper;
     }
 
@@ -27,7 +28,7 @@ public class PatientsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<PatientResponseDto>>> Get()
     {
-        List<Patient> patients = await _context.Patients.Where(p => p.DeletedAt == null).ToListAsync();
+        var patients = await _repository.GetAllAsync();
 
         var response = _mapper.Map<List<PatientResponseDto>>(patients);
 
@@ -38,10 +39,10 @@ public class PatientsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<PatientResponseDto>> GetById(int id)
     {
-        Patient? patient = await _context.Patients.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
+        Patient? patient = await _repository.GetByIdAsync(id);
 
         if (patient == null)
-            throw new KeyNotFoundException("Clinica não encontrada");
+            throw new KeyNotFoundException("Paciente não encontrado");
 
         var response = _mapper.Map<PatientResponseDto>(patient);
 
@@ -53,25 +54,21 @@ public class PatientsController : ControllerBase
     public async Task<ActionResult> Post(PatientCreateDto dto)
     {
         var patient = _mapper.Map<Patient>(dto);
+        var createdPatient = await _repository.AddAsync(patient);
+        var response = _mapper.Map<PatientResponseDto>(createdPatient);
 
-        _context.Patients.Add(patient);
-        await _context.SaveChangesAsync();
-
-        var response = _mapper.Map<PatientResponseDto>(patient);
-        return CreatedAtAction(nameof(GetById), new { id = patient.Id }, response);
+        return CreatedAtAction(nameof(GetById), new { id = createdPatient.Id }, response);
     }
 
     [Authorize]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(int id)
     {
-        Patient? patient = await _context.Patients.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
+        Patient? patient = await _repository.GetByIdAsync(id);
 
         if (patient == null) throw new KeyNotFoundException("Paciente não encontrado");
-
-        patient.DeletedAt = DateTime.UtcNow;
-        _context.Update(patient);
-        await _context.SaveChangesAsync();
+        
+        await _repository.DeleteAsync(patient);
 
         return NoContent();
     }
@@ -80,18 +77,14 @@ public class PatientsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(int id, PatientUpdateDto dto)
     {
-        Patient? patient = await _context.Patients.Where(p => p.Id == id && p.DeletedAt == null).FirstOrDefaultAsync();
+        Patient? patient = await _repository.GetByIdAsync(id);
 
         if (patient == null) throw new KeyNotFoundException("Paciente não encontrado");
 
-        var validator = new PatientUpdateValidator(_context, id);
-        var result = await validator.ValidateAsync(dto);
-
-        if (!result.IsValid) throw new ValidationException(result.Errors);
-
-        _mapper.Map(dto, patient);
-        _context.Update(patient);
-        await _context.SaveChangesAsync();
+        dto.Id = id;
+        _mapper.Map(dto,patient);
+        
+        await _repository.UpdateAsync(patient);
 
         var response = _mapper.Map<PatientResponseDto>(patient);
 
