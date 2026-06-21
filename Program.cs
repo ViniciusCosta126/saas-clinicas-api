@@ -13,6 +13,7 @@ using SaasClinicas.Api.Dtos.Professionals;
 using SaasClinicas.Api.Dtos.Users;
 using SaasClinicas.Api.Mappings;
 using SaasClinicas.Api.Middleware;
+using SaasClinicas.Api.Repositories;
 using SaasClinicas.Api.Services;
 using SaasClinicas.Api.Validators.Auth;
 using SaasClinicas.Api.Validators.Clinics;
@@ -69,6 +70,8 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<ProfessionalProfile>();
     cfg.AddProfile<PatientProfile>();
 });
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

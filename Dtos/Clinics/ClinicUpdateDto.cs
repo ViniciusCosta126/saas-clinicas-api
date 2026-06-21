@@ -1,5 +1,8 @@
+using SaasClinicas.Api.Dtos.Base;
+
 namespace SaasClinicas.Api.Dtos.Clinics;
-public class ClinicUpdateDto
+
+public class ClinicUpdateDto : BaseDto
 {
     public string ClinicName { get; set; } = string.Empty;
 

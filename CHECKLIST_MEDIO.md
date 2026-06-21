@@ -5,11 +5,11 @@
 ---
 
 ## 11. Implementar Repository Pattern
-- [ ] Criar interface `IRepository<T>`
-- [ ] Implementar `Repository<T>` genérico
-- [ ] Remover acesso direto ao `DbContext` dos controllers
-- [ ] Injetar `IRepository<T>` nos controllers
-- [ ] Facilitar testes unitários
+- [x] Criar interface `IRepository<T>`
+- [x] Implementar `Repository<T>` genérico
+- [x] Remover acesso direto ao `DbContext` dos controllers
+- [x] Injetar `IRepository<T>` nos controllers
+- [x] Facilitar testes unitários
 
 **Esforço**: 2-3 horas
 **Impacto**: MÉDIO - Testabilidade e manutenção

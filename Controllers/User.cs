@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SaasClinicas.Api.Data;
 using SaasClinicas.Api.Dtos.Users;
 using SaasClinicas.Api.Models;
+using SaasClinicas.Api.Repositories;
 using SaasClinicas.Api.Services;
 using SaasClinicas.Api.Validators.Users;
 
@@ -16,12 +17,12 @@ namespace SaasClinicas.Api.Controllers;
 public class UsersController : ControllerBase
 {
 
-    private readonly ApplicationDbContext _context;
+    private readonly IRepository<User> _repository;
     private readonly IMapper _mapper;
     private readonly IPasswordHashService _passwordHashService;
-    public UsersController(ApplicationDbContext context, IMapper mapper, IPasswordHashService passwordHashService)
+    public UsersController(IRepository<User> repository, IMapper mapper, IPasswordHashService passwordHashService)
     {
-        _context = context;
+        _repository = repository;
         _mapper = mapper;
         _passwordHashService = passwordHashService;
     }
@@ -30,7 +31,7 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<UserResponseDto>>> Get()
     {
-        List<User> users = await _context.Users.Where(c => c.DeletedAt == null).ToListAsync();
+        var users = await _repository.GetAllAsync();
 
         var response = _mapper.Map<List<UserResponseDto>>(users);
 
@@ -41,7 +42,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<UserResponseDto>> GetById(int id)
     {
-        User? user = await _context.Users.Where(u => u.Id == id && u.DeletedAt == null).FirstOrDefaultAsync();
+        User? user = await _repository.GetByIdAsync(id);
         if (user == null) throw new KeyNotFoundException("Usuario não encontrado");
         var response = _mapper.Map<UserResponseDto>(user);
         return Ok(response);
@@ -53,26 +54,22 @@ public class UsersController : ControllerBase
     {
         var user = _mapper.Map<User>(dto);
         user.Password = _passwordHashService.HashPassword(dto.Password);
-        _context.Users.Add(user);
 
-        await _context.SaveChangesAsync();
+        var createdUser = await _repository.AddAsync(user);
 
-        var response = _mapper.Map<UserResponseDto>(user);
+        var response = _mapper.Map<UserResponseDto>(createdUser);
 
-        return CreatedAtAction(nameof(GetById), new { id = user.Id }, response);
+        return CreatedAtAction(nameof(GetById), new { id = createdUser.Id }, response);
     }
 
     [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        User? user = await _context.Users.Where(u => u.Id == id && u.DeletedAt == null).FirstOrDefaultAsync();
+        User? user = await _repository.GetByIdAsync(id);
         if (user == null) throw new KeyNotFoundException("Usuario não encontrado");
 
-        user.DeletedAt = DateTime.UtcNow;
-        _context.Update(user);
-
-        await _context.SaveChangesAsync();
+        await _repository.DeleteAsync(user);
 
         return NoContent();
     }
@@ -82,22 +79,14 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Put(int id, UserUpdateDto dto)
     {
 
-        User? user = await _context.Users.Where(u => u.Id == id && u.DeletedAt == null).FirstOrDefaultAsync();
+        User? user = await _repository.GetByIdAsync(id);
         if (user == null) throw new KeyNotFoundException("Usuario não encontrado");
 
-        var validator = new UserUpdateValidator(_context, user.Id);
-        var result = await validator.ValidateAsync(dto);
-
-        if (!result.IsValid) throw new ValidationException(result.Errors);
-
+        dto.Id = id;
         _mapper.Map(dto, user);
-
-        user.UpdatedAt = DateTime.UtcNow;
-        user.Password = _passwordHashService.HashPassword(dto.Password);
-
-        await _context.SaveChangesAsync();
-
+        await _repository.UpdateAsync(user);
         var response = _mapper.Map<UserResponseDto>(user);
+
         return Ok(response);
     }
 }

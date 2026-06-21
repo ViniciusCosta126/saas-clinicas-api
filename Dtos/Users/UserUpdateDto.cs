@@ -1,8 +1,9 @@
+using SaasClinicas.Api.Dtos.Base;
 using SaasClinicas.Api.Enums;
 
 namespace SaasClinicas.Api.Dtos.Users;
 
-public class UserUpdateDto
+public class UserUpdateDto : BaseDto
 {
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;

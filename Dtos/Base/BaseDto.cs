@@ -1,7 +1,7 @@
-namespace SaasClinicas.Api.Models.Base;
+namespace SaasClinicas.Api.Dtos.Base;
 
 
-public abstract class BaseEntity
+public class BaseDto
 {
     public int Id { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

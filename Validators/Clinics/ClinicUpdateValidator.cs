@@ -26,11 +26,11 @@ public class ClinicUpdateValidator : AbstractValidator<ClinicUpdateDto>
         RuleFor(c => c.Email)
             .NotEmpty().WithMessage("O email da clinica nao pode ser vazio")
             .EmailAddress().WithMessage("Formato de email inconsistente")
-            .MustAsync(async (email, ct) =>
+            .MustAsync(async (clinic, email, ct) =>
             {
                 var exists = await _context.Clinics
-                    .Where(c => c.Id != _clinicId)
-                    .AnyAsync(c => c.Email == email);
+                    .AnyAsync(c => c.Email == email && c.Id != clinic.Id && c.DeletedAt == null);
+                    
                 return !exists;
             }).WithMessage("Email já cadastrado");
 
