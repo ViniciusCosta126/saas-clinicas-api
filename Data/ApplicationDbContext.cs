@@ -24,6 +24,14 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Clinic>().HasMany(c => c.Professionals).WithOne(p => p.Clinic).HasForeignKey(p => p.ClinicId);
 
+        modelBuilder.Entity<Patient>().HasIndex(p => new { p.Cpf }).IsUnique();
+        modelBuilder.Entity<Patient>().HasIndex(p => new { p.Email }).IsUnique();
+
+        modelBuilder.Entity<User>().HasIndex(u => new { u.Cpf }).IsUnique();
+        modelBuilder.Entity<User>().HasIndex(u => new { u.Email }).IsUnique();
+
+        modelBuilder.Entity<Professional>().HasIndex(p => new { p.Email }).IsUnique();
+
         base.OnModelCreating(modelBuilder);
     }
 

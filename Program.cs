@@ -6,9 +6,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SaasClinicas.Api.Data;
+using SaasClinicas.Api.Dtos.Auth;
+using SaasClinicas.Api.Dtos.Clinics;
+using SaasClinicas.Api.Dtos.Patients;
+using SaasClinicas.Api.Dtos.Professionals;
+using SaasClinicas.Api.Dtos.Users;
 using SaasClinicas.Api.Mappings;
 using SaasClinicas.Api.Middleware;
 using SaasClinicas.Api.Services;
+using SaasClinicas.Api.Validators.Auth;
+using SaasClinicas.Api.Validators.Clinics;
+using SaasClinicas.Api.Validators.Patients;
+using SaasClinicas.Api.Validators.Professionals;
+using SaasClinicas.Api.Validators.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +26,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddScoped<IValidator<UserCreateDto>, UserCreateValidator>();
+builder.Services.AddScoped<IValidator<PatientCreateDto>, PatientCreateValidator>();
+builder.Services.AddScoped<IValidator<ProfessionalCreateDto>, ProfessionalCreateValidator>();
+builder.Services.AddScoped<IValidator<ClinicCreateDto>, ClinicCreateValidator>();
+builder.Services.AddScoped<IValidator<RegisterDto>, RegisterValidator>();
+builder.Services.AddScoped<IValidator<LoginDto>, LoginValidator>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

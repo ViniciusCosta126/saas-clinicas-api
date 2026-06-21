@@ -52,12 +52,12 @@
 ---
 
 ## 10. Adicionar Índices e Constraints
-- [ ] Email único em `User`
-- [ ] Email único em `Patient`
-- [ ] Email único em `Professional`
-- [ ] CPF único em `User`
-- [ ] CPF único em `Patient`
-- [ ] Criar nova migration
+- [x] Email único em `User`
+- [x] Email único em `Patient`
+- [x] Email único em `Professional`
+- [x] CPF único em `User`
+- [x] CPF único em `Patient`
+- [x] Criar nova migration
 
 **Esforço**: 30 min
 **Impacto**: ALTO - Integridade de dados
@@ -67,6 +67,6 @@
 ## Resumo da Fase Alta
 - **Total de Tarefas**: 5
 - **Tarefas Concluídas**: 0
-- **Progresso**: 0%
+- **Progresso**: 100%
 - **Tempo Estimado**: 5-6 horas
 - **Prioridade**: 🟠 ALTA
