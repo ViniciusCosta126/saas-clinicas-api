@@ -44,6 +44,7 @@ public class TestDbFixture : IDisposable
         Context.ClinicPatients.RemoveRange(Context.ClinicPatients);
         Context.Patients.RemoveRange(Context.Patients);
         Context.Users.RemoveRange(Context.Users);
+        Context.Professionals.RemoveRange(Context.Professionals);
         Context.SaveChanges();
         Context.ChangeTracker.Clear();
     }
