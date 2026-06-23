@@ -41,10 +41,10 @@
 ---
 
 ## 14. Adicionar Soft Delete Global
-- [ ] Criar extension method `IncludeDeleted<T>()`
-- [ ] Usar em todos os Gets
-- [ ] Centralizar filtro em base repository
-- [ ] Garantir consistência
+- [x] Criar extension method `IncludeDeleted<T>()`
+- [x] Usar em todos os Gets
+- [x] Centralizar filtro em base repository
+- [x] Garantir consistência
 
 **Esforço**: 30 min
 **Impacto**: MÉDIO - Consistência
