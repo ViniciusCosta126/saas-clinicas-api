@@ -15,7 +15,7 @@ public class PatientCreateValidator : AbstractValidator<PatientCreateDto>
 
         RuleFor(p => p.Name)
             .NotEmpty().WithMessage("O nome do paciente é obrigatório")
-            .Length(4, 255).WithMessage("O nome do paciente deve ter entre 4 e 255 caracteres");
+            .Length(3, 255).WithMessage("O nome do paciente deve ter entre 4 e 255 caracteres");
 
         RuleFor(p => p.Email)
             .NotEmpty().WithMessage("O email do paciente é obrigatório")

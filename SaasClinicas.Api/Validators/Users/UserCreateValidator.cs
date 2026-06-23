@@ -14,7 +14,7 @@ public class UserCreateValidator : AbstractValidator<UserCreateDto>
         _context = context;
         RuleFor(u => u.Name)
             .NotEmpty().WithMessage("O nome de usuario não pode ser vazio")
-            .Length(4, 255).WithMessage("Nome deve ter entre 4 e 255 caracteres");
+            .Length(3, 255).WithMessage("Nome deve ter entre 4 e 255 caracteres");
 
         RuleFor(u => u.Email)
             .NotEmpty().WithMessage("O email não pode ser vazio")
@@ -51,6 +51,6 @@ public class UserCreateValidator : AbstractValidator<UserCreateDto>
             .Length(8, 32).WithMessage("Senha precisa ter 8 caracteres com no maximo 32 caracteres");
 
         RuleFor(u => u.Role)
-            .NotEmpty().WithMessage("Role é obrigatório");
+            .IsInEnum().WithMessage("Perfil de acesso invalido ou não reconhecido");
     }
 }
