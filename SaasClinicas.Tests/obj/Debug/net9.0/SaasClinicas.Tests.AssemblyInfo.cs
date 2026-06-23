@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SaasClinicas.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+96aaf031d3641def0cce0b86162eca8582d8e184")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0455afc638fa4085fda9e57e8a3c42ace70cc572")]
 [assembly: System.Reflection.AssemblyProductAttribute("SaasClinicas.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SaasClinicas.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
